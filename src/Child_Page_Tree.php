@@ -39,6 +39,16 @@ class Child_Page_Tree {
 		// Action tor enqueue custom css
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_style' ] );
 
+		$this->load_textdomain();
+
+	}
+
+	/**
+	 * Load Plugin's Translations
+	 */
+	public function load_textdomain() {
+
+		load_plugin_textdomain( 'child-page-tree', false, dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages' );
 	}
 
 	/**
@@ -59,14 +69,14 @@ class Child_Page_Tree {
 			$this->set_tree_location( get_post_meta( $post_id, 'child_page_tree_action', true ) );
 
 			// exit if no page tree should be added
-			if ( $this->get_tree_location() == '' || $this->get_tree_location == 'none' )
+			if ( $this->get_tree_location() == '' || $this->get_tree_location() == 'none' )
 				return $content;
 
 			// Build Tree
 			$tree = $this->get_child_page_tree_template( $post_id );
 
 			// Decide where to add the tree
-			switch ( $this->get_tree_location ) {
+			switch ( $this->get_tree_location() ) {
 				case 'prepend':
 					return $tree . $content;
 					break;
@@ -177,7 +187,7 @@ class Child_Page_Tree {
 		// Load Style only in Frontend
 		if ( is_admin() ) return 0;
 
-		$url = plugins_url( 'assets/css/child-page-tree.css', __FILE__ );
+		$url = plugins_url( 'assets/css/child-page-tree.css', dirname( __FILE__ ) );
 		wp_register_style( 'child_page_tree_style', $url );
 		wp_enqueue_style( 'child_page_tree_style' );
 
